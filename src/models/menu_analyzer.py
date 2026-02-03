@@ -1,27 +1,30 @@
+import pandas as pd
+
 def categorize_menu(df):
     """
     Categorizes items based on Profit and Popularity.
     """
-    # 1. Group by Item Name to see how many sold and total profit
+    # 1. Group by Item Name to see total sales and average profit
+    # (Note: Check your CSV column names. Replace 'item_name' if it's named differently)
     menu_stats = df.groupby('item_name').agg({
         'quantity': 'sum',
-        'item_profit': 'mean' # Assumes your data has a profit column
+        'item_profit': 'mean' 
     })
     
-    # 2. Find the average sales and average profit
+    # 2. Find the average sales and average profit to create our 'crosshair'
     avg_sales = menu_stats['quantity'].mean()
     avg_profit = menu_stats['item_profit'].mean()
     
-    # 3. Apply the 'Box' Logic
+    # 3. Apply the 'Box' Logic (The Matrix)
     def get_box(row):
         if row['quantity'] > avg_sales and row['item_profit'] > avg_profit:
-            return "STAR (Keep & Promote)"
+            return "STAR"
         elif row['quantity'] > avg_sales and row['item_profit'] <= avg_profit:
-            return "PLOWHORSE (Raise Price)"
+            return "PLOWHORSE"
         elif row['quantity'] <= avg_sales and row['item_profit'] > avg_profit:
-            return "PUZZLE (Better Marketing)"
+            return "PUZZLE"
         else:
-            return "DOG (Remove from Menu)"
+            return "DOG"
 
     menu_stats['category'] = menu_stats.apply(get_box, axis=1)
     return menu_stats
