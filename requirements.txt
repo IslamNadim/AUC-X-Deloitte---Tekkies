@@ -2,3 +2,9 @@ flask
 flask-cors
 pandas
 numpy
+psycopg2-binary
+scikit-learn
+streamlit
+requests
+openai
+python-dotenv
